@@ -48,6 +48,35 @@ export default function Editor() {
     setCursorPosition(currentLineStart)
   }
 
+  const handleEmphasis = (emphasis: string) => () => {
+    if (!textareaRef.current) return
+
+    const startPos = textareaRef.current.selectionStart
+    const endPos = textareaRef.current.selectionEnd
+
+    // Retrieve the content
+    const startContent = content.substring(0, startPos)
+    const selectedContent = content.substring(startPos, endPos)
+    const endContent = content.substring(endPos)
+
+    const newContent = `${startContent}${emphasis}${selectedContent}${emphasis}${endContent}`
+
+    setContent(newContent)
+
+    const newStartPos = startPos + 2
+    const newEndPos = newStartPos + selectedContent.length
+
+    setTimeout(() => { // Add a slight delay to ensure proper execution
+      textareaRef.current!.setSelectionRange(newStartPos, newEndPos)
+      textareaRef.current!.focus()
+    }, 0)
+  }
+
+  const handleBold = handleEmphasis('**')
+  const handleItalic = handleEmphasis('*')
+  const handleUnderline = handleEmphasis('__')
+  const handleStrikethrough = handleEmphasis('--')
+
   React.useEffect(() => {
     if (textareaRef.current && cursorPosition !== null) {
       textareaRef.current.setSelectionRange(cursorPosition, cursorPosition)
@@ -72,16 +101,29 @@ export default function Editor() {
         <Button
           variant="ghost"
           size="icon"
+          onClick={handleBold}
         >
           <Bold className="h-4 w-4" />
         </Button>
-        <Button variant="ghost" size="icon">
+        <Button
+          variant="ghost"
+          size="icon"
+          onClick={handleItalic}
+        >
           <Italic className="h-4 w-4" />
         </Button>
-        <Button variant="ghost" size="icon">
+        <Button
+          variant="ghost"
+          size="icon"
+          onClick={handleUnderline}
+        >
           <Underline className="h-4 w-4" />
         </Button>
-        <Button variant="ghost" size="icon">
+        <Button
+          variant="ghost"
+          size="icon"
+          onClick={handleStrikethrough}
+        >
           <Strikethrough className="h-4 w-4" />
         </Button>
 
