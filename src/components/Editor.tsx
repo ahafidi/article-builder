@@ -10,12 +10,18 @@ import { Separator } from "@/components/ui/separator"
 import React from "react"
 
 export default function Editor() {
-
-  const [content, setContent] = React.useState('')
-
   const textareaRef = React.useRef<HTMLTextAreaElement>(null)
 
+  const [content, setContent] = React.useState('')
   const [cursorPosition, setCursorPosition] = React.useState<number | null>(null)
+
+  React.useEffect(() => {
+    if (textareaRef.current && cursorPosition !== null) {
+      textareaRef.current.setSelectionRange(cursorPosition, cursorPosition)
+      textareaRef.current.focus()
+      setCursorPosition(null)
+    }
+  }, [cursorPosition])
 
   const handleHeading = () => {
     if (!textareaRef.current) return
@@ -63,7 +69,7 @@ export default function Editor() {
 
     setContent(newContent)
 
-    const newStartPos = startPos + 2
+    const newStartPos = startPos + emphasis.length
     const newEndPos = newStartPos + selectedContent.length
 
     setTimeout(() => { // Add a slight delay to ensure proper execution
@@ -77,17 +83,131 @@ export default function Editor() {
   const handleUnderline = handleEmphasis('__')
   const handleStrikethrough = handleEmphasis('--')
 
-  React.useEffect(() => {
-    if (textareaRef.current && cursorPosition !== null) {
-      textareaRef.current.setSelectionRange(cursorPosition, cursorPosition)
-      textareaRef.current.focus()
-      setCursorPosition(null)
+  const handleLink = () => {
+    if (!textareaRef.current) return
+
+    const startPos = textareaRef.current.selectionStart
+    const endPos = textareaRef.current.selectionEnd
+
+    const startContent = content.substring(0, startPos)
+    const selectedContent = content.substring(startPos, endPos)
+    const endContent = content.substring(endPos)
+
+    const newContent =
+      selectedContent === ''
+        ? `${startContent}[text link](url)${endContent}`
+        : `${startContent}[${selectedContent}](url)${endContent}`
+
+    setContent(newContent)
+
+    const newStartPos = startPos + 1
+    const newEndPos = newStartPos + (selectedContent.length > 0 ? selectedContent.length : 9)
+
+    setTimeout(() => {
+      textareaRef.current!.setSelectionRange(newStartPos, newEndPos)
+      textareaRef.current!.focus()
+    }, 0)
+  }
+
+  const handleImage = () => {
+    if (!textareaRef.current) return
+
+    const startPos = textareaRef.current.selectionStart
+    const endPos = textareaRef.current.selectionEnd
+
+    const startContent = content.substring(0, startPos)
+    const selectedContent = content.substring(startPos, endPos)
+    const endContent = content.substring(endPos)
+
+    const newContent =
+      selectedContent === ''
+        ? `${startContent}![alt text](url)${endContent}`
+        : `${startContent}![${selectedContent}](url)${endContent}`
+
+    setContent(newContent)
+
+    const newStartPos = startPos + 2
+    const newEndPos = newStartPos + (selectedContent.length > 0 ? selectedContent.length : 9)
+
+    setTimeout(() => {
+      textareaRef.current!.setSelectionRange(newStartPos, newEndPos)
+      textareaRef.current!.focus()
+    }, 0)
+  }
+
+  const handleQuote = () => {
+    if (!textareaRef.current) return
+
+    const cursorPos = textareaRef.current.selectionStart
+    const contentArray = content.split('\n')
+    let currentLineStart = 0
+
+    for (let i = 0; i < contentArray.length; i++) {
+      if (currentLineStart + contentArray[i].length >= cursorPos) {
+        const line = contentArray[i]
+        let newContent = ''
+
+        if (line.startsWith('>')) {
+          newContent = `${content.substring(0, currentLineStart)}>${content.substring(currentLineStart)}`
+        } else {
+          newContent = `${content.substring(0, currentLineStart)}> ${content.substring(currentLineStart)}`
+        }
+
+        setContent(newContent)
+        break
+      }
+
+      currentLineStart += contentArray[i].length + 1
     }
-  }, [cursorPosition])
+    setCursorPosition(currentLineStart)
+  }
+
+  const handleCode = handleEmphasis('`')
+  const handleMath = handleEmphasis('$')
+
+  const handleList = () => {
+    if (!textareaRef.current) return
+
+    const cursorPos = textareaRef.current.selectionStart
+    const contentArray = content.split('\n')
+    let currentLineStart = 0
+
+    for (let i = 0; i < contentArray.length; i++) {
+      if (currentLineStart + contentArray[i].length >= cursorPos) {
+        const line = contentArray[i]
+        const newContent = `${content.substring(0, currentLineStart)}- ${content.substring(currentLineStart)}`
+        setContent(newContent)
+        break
+      }
+
+      currentLineStart += contentArray[i].length + 1
+    }
+    setCursorPosition(currentLineStart)
+  }
+
+  const handleOrderedList = () => {
+    if (!textareaRef.current) return
+
+    const cursorPos = textareaRef.current.selectionStart
+    const contentArray = content.split('\n')
+    let currentLineStart = 0
+
+    for (let i = 0; i < contentArray.length; i++) {
+      if (currentLineStart + contentArray[i].length >= cursorPos) {
+        const line = contentArray[i]
+        const newContent = `${content.substring(0, currentLineStart)}1. ${content.substring(currentLineStart)}`
+        setContent(newContent)
+        break
+      }
+
+      currentLineStart += contentArray[i].length + 1
+    }
+    setCursorPosition(currentLineStart)
+  }
 
   return (
     <div className="h-full flex flex-col ml-5">
-      <div className="m-0 flex flex-row gap-x-2 items-center">
+      <div className="m-0 flex flex-row gap-x-2 items-center min-w-fit">
         <Button
           variant="ghost"
           size="icon"
@@ -129,28 +249,56 @@ export default function Editor() {
 
         <Separator orientation="vertical" className="my-2 h-10" />
 
-        <Button variant="ghost" size="icon">
+        <Button
+          variant="ghost"
+          size="icon"
+          onClick={handleLink}
+        >
           <Link className="h-4 w-4" />
         </Button>
-        <Button variant="ghost" size="icon">
+        <Button
+          variant="ghost"
+          size="icon"
+          onClick={handleImage}
+        >
           <Image className="h-4 w-4" />
         </Button>
-        <Button variant="ghost" size="icon">
+        <Button
+          variant="ghost"
+          size="icon"
+          onClick={handleQuote}
+        >
           <Quote className="h-4 w-4" />
         </Button>
-        <Button variant="ghost" size="icon">
+        <Button
+          variant="ghost"
+          size="icon"
+          onClick={handleCode}
+        >
           <Code2 className="h-4 w-4" />
         </Button>
-        <Button variant="ghost" size="icon">
+        <Button
+          variant="ghost"
+          size="icon"
+          onClick={handleMath}
+        >
           <Sigma className="h-4 w-4" />
         </Button>
 
         <Separator orientation="vertical" className="my-2 h-10" />
 
-        <Button variant="ghost" size="icon">
+        <Button
+          variant="ghost"
+          size="icon"
+          onClick={handleList}
+        >
           <List className="h-4 w-4" />
         </Button>
-        <Button variant="ghost" size="icon">
+        <Button
+          variant="ghost"
+          size="icon"
+          onClick={handleOrderedList}
+        >
           <ListOrdered className="h-4 w-4" />
         </Button>
       </div>
