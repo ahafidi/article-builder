@@ -3,6 +3,7 @@
 import { Bold, Code2, Heading, Image, Italic, Link, List, ListOrdered, Quote, Sigma, Strikethrough, Underline } from "lucide-react"
 
 import { Textarea } from "@/components//ui/textarea"
+import { ContentContext } from '@/components/Context'
 import {
   Button,
 } from "@/components/ui/button"
@@ -12,7 +13,8 @@ import React from "react"
 export default function Editor() {
   const textareaRef = React.useRef<HTMLTextAreaElement>(null)
 
-  const [content, setContent] = React.useState('')
+  const { content, setContent } = React.useContext(ContentContext)
+
   const [cursorPosition, setCursorPosition] = React.useState<number | null>(null)
 
   React.useEffect(() => {
