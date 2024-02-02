@@ -91,7 +91,7 @@
     }
 
     :not(pre)>code {
-      @apply bg-gray-300 px-1 rounded-sm font-normal before:content-none after:content-none
+      @apply bg-gray-300 px-1 rounded-sm font-normal before:content-none after:content-none dark:bg-gray-700
     }
   }
 }
