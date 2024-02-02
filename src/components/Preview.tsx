@@ -53,7 +53,7 @@ export default function Preview() {
   const markdownContent = md.render(content)
 
   return (
-    <div className='p-5 prose'>
+    <div className='p-5 prose dark:prose-invert'>
       <Latex
         delimiters={[
           { left: '$$', right: '$$', display: true },
