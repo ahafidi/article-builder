@@ -1,6 +1,6 @@
 "use client"
 
-import { Bold, Code2, Heading, Image, Italic, Link, List, ListOrdered, Quote, Sigma, Strikethrough, Underline } from "lucide-react"
+import { Bold, Code2, Heading, Highlighter, Image, Italic, Link, List, ListOrdered, Quote, Sigma, Strikethrough, Subscript, Superscript, Table, Underline } from "lucide-react"
 
 import { Textarea } from "@/components//ui/textarea"
 import { ContentContext } from '@/components/Context'
@@ -82,8 +82,8 @@ export default function Editor() {
 
   const handleBold = handleEmphasis('**')
   const handleItalic = handleEmphasis('*')
-  const handleUnderline = handleEmphasis('__')
-  const handleStrikethrough = handleEmphasis('--')
+  const handleUnderline = handleEmphasis('++')
+  const handleStrikethrough = handleEmphasis('~~')
 
   const handleLink = () => {
     if (!textareaRef.current) return
@@ -207,111 +207,158 @@ export default function Editor() {
     setCursorPosition(currentLineStart)
   }
 
+  const handleHighlighter = handleEmphasis('==')
+  const handleSuperscript = handleEmphasis('^')
+  const handleSubscript = handleEmphasis('~')
+
+  const handleTable = () => {
+    const table = '|   |   |   |\n|---|---|---|\n|   |   |   |\n|   |   |   |\n'
+    setContent(c => c + table)
+  }
+
   return (
-    <div className="h-full flex flex-col ml-5">
-      <div className="m-0 flex flex-row gap-x-2 items-center min-w-fit">
+    <div className="flex flex-col ml-5">
+      <div className="flex flex-row items-center m-0 gap-x-2 min-w-fit">
         <Button
           variant="ghost"
           size="icon"
           onClick={handleHeading}
         >
-          <Heading className="h-4 w-4" />
+          <Heading className="w-4 h-4" />
         </Button>
 
-        <Separator orientation="vertical" className="my-2 h-10" />
+        <Separator orientation="vertical" className="h-10 my-2" />
 
         <Button
           variant="ghost"
           size="icon"
           onClick={handleBold}
         >
-          <Bold className="h-4 w-4" />
+          <Bold className="w-4 h-4" />
         </Button>
         <Button
           variant="ghost"
           size="icon"
           onClick={handleItalic}
         >
-          <Italic className="h-4 w-4" />
+          <Italic className="w-4 h-4" />
         </Button>
         <Button
           variant="ghost"
           size="icon"
           onClick={handleUnderline}
         >
-          <Underline className="h-4 w-4" />
+          <Underline className="w-4 h-4" />
         </Button>
         <Button
           variant="ghost"
           size="icon"
           onClick={handleStrikethrough}
         >
-          <Strikethrough className="h-4 w-4" />
+          <Strikethrough className="w-4 h-4" />
         </Button>
 
-        <Separator orientation="vertical" className="my-2 h-10" />
+        <Separator orientation="vertical" className="h-10 my-2" />
 
         <Button
           variant="ghost"
           size="icon"
           onClick={handleLink}
         >
-          <Link className="h-4 w-4" />
+          <Link className="w-4 h-4" />
         </Button>
         <Button
           variant="ghost"
           size="icon"
           onClick={handleImage}
         >
-          <Image className="h-4 w-4" />
+          <Image className="w-4 h-4" />
         </Button>
         <Button
           variant="ghost"
           size="icon"
           onClick={handleQuote}
         >
-          <Quote className="h-4 w-4" />
+          <Quote className="w-4 h-4" />
         </Button>
         <Button
           variant="ghost"
           size="icon"
           onClick={handleCode}
         >
-          <Code2 className="h-4 w-4" />
+          <Code2 className="w-4 h-4" />
         </Button>
         <Button
           variant="ghost"
           size="icon"
           onClick={handleMath}
         >
-          <Sigma className="h-4 w-4" />
+          <Sigma className="w-4 h-4" />
         </Button>
 
-        <Separator orientation="vertical" className="my-2 h-10" />
+        <Separator orientation="vertical" className="h-10 my-2" />
 
         <Button
           variant="ghost"
           size="icon"
           onClick={handleList}
         >
-          <List className="h-4 w-4" />
+          <List className="w-4 h-4" />
         </Button>
         <Button
           variant="ghost"
           size="icon"
           onClick={handleOrderedList}
         >
-          <ListOrdered className="h-4 w-4" />
+          <ListOrdered className="w-4 h-4" />
+        </Button>
+
+        <Separator orientation="vertical" className="h-10 my-2" />
+
+        <Button
+          variant="ghost"
+          size="icon"
+          onClick={handleHighlighter}
+        >
+          <Highlighter className="w-4 h-4" />
+        </Button>
+        <Button
+          variant="ghost"
+          size="icon"
+          onClick={handleSuperscript}
+        >
+          <Superscript className="w-4 h-4" />
+        </Button>
+        <Button
+          variant="ghost"
+          size="icon"
+          onClick={handleSubscript}
+        >
+          <Subscript className="w-4 h-4" />
+        </Button>
+
+        <Separator orientation="vertical" className="h-10 my-2" />
+
+        <Button
+          variant="ghost"
+          size="icon"
+          onClick={handleTable}
+        >
+          <Table className="w-4 h-4" />
         </Button>
       </div>
       <Separator className="mb-2 " />
-      <div className="mr-2 grow">
+      <div className="mr-2">
         <Textarea
-          className="resize-none h-full border-none focus-visible:ring-0"
+          className="min-h-screen overflow-hidden font-mono border-none rounded-none resize-none focus-visible:ring-0"
           placeholder="Type your text here."
           ref={textareaRef}
           value={content}
           onChange={(e) => setContent(e.target.value)}
+          onInput={e => {
+            if (textareaRef.current)
+              textareaRef.current.style.height = (textareaRef.current.scrollHeight) + "px"
+          }}
         />
       </div>
     </div>
