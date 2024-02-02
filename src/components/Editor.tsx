@@ -1,14 +1,29 @@
 "use client"
 
-import { Bold, Code2, Heading, Highlighter, Image, Italic, Link, List, ListOrdered, Quote, Sigma, Strikethrough, Subscript, Superscript, Table, Underline } from "lucide-react"
+import {
+  Bold,
+  Code2,
+  Heading,
+  Highlighter,
+  Image,
+  Italic,
+  Link,
+  List,
+  ListOrdered,
+  Quote,
+  Sigma,
+  Strikethrough,
+  Subscript,
+  Superscript,
+  Table,
+  Underline
+} from "lucide-react"
+import React from "react"
 
 import { Textarea } from "@/components//ui/textarea"
 import { ContentContext } from '@/components/Context'
-import {
-  Button,
-} from "@/components/ui/button"
+import { Button } from "@/components/ui/button"
 import { Separator } from "@/components/ui/separator"
-import React from "react"
 
 export default function Editor() {
   const textareaRef = React.useRef<HTMLTextAreaElement>(null)
@@ -165,7 +180,7 @@ export default function Editor() {
   }
 
   const handleCode = handleEmphasis('`')
-  const handleMath = handleEmphasis('$')
+  const handleMath = handleEmphasis('$$')
 
   const handleList = () => {
     if (!textareaRef.current) return

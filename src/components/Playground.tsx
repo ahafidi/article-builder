@@ -1,17 +1,17 @@
 "use client"
 
+import React from "react"
+
+import { ContentContext } from '@/components/Context'
+import Editor from "@/components/Editor"
+import Loader from "@/components/Loader"
+import Preview from "@/components/Preview"
 import {
   ResizableHandle,
   ResizablePanel,
   ResizablePanelGroup,
 } from "@/components/ui/resizable"
 
-import Editor from "@/components/Editor"
-import React from "react"
-
-import { ContentContext } from '@/components/Context'
-import Loader from "@/components/Loader"
-import Preview from "@/components/Preview"
 
 export function Playground() {
   const [content, setContent] = React.useState('')

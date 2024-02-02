@@ -1,11 +1,17 @@
 "use client"
 
 import hljs from 'highlight.js'
+import React from "react"
+import Latex from 'react-latex-next'
 import { Remarkable } from 'remarkable'
 import { linkify } from 'remarkable/linkify'
 
+import { ContentContext } from "@/components/Context"
+
+import 'katex/dist/katex.min.css'
+
 const md = new Remarkable({
-  html: false,
+  html: false, // do not remove!
   xhtmlOut: true,
   breaks: true,
   langPrefix: 'language-',
@@ -41,16 +47,23 @@ md.inline.ruler.enable([
   'sup'
 ])
 
-import { ContentContext } from "@/components/Context"
-import React from "react"
-
 export default function Preview() {
   const { content } = React.useContext(ContentContext)
 
+  const markdownContent = md.render(content)
+
   return (
-    <div
-      className="p-5 prose"
-      dangerouslySetInnerHTML={{ __html: md.render(content) }}
-    />
+    <div className='p-5 prose'>
+      <Latex
+        delimiters={[
+          { left: '$$', right: '$$', display: true },
+          { left: '\\(', right: '\\)', display: false },
+          { left: '$', right: '$', display: false },
+          { left: '\\[', right: '\\]', display: true },
+        ]}
+      >
+        {markdownContent}
+      </Latex>
+    </div>
   )
 }
