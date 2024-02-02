@@ -20,7 +20,17 @@ export function Header() {
     <div className="mx-5">
       <div className="flex justify-between items-center my-2 text-sm font-medium">
         <h1 className="">
-          Article Builder <span className="text-muted-foreground">&mdash; by <a href="https://twitter.com/ahafidi_" target="_blank" className="hover:text-gray-800">@ahafidi_</a></span>
+          Article Builder
+          <span className="text-muted-foreground">
+            &nbsp;&mdash; by&nbsp;
+            <a
+              href="https://twitter.com/ahafidi_"
+              target="_blank"
+              className="hover:text-gray-800 dark:hover:text-gray-200"
+            >
+              @ahafidi_
+            </a>
+          </span>
         </h1>
         <div className="flex items-center space-x-2">
           <Button
